@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-protocol SwipeControllerDelegate: class {
+protocol SwipeControllerDelegate: AnyObject {
     
-    func swipeController(_ controller: SwipeController, canBeginEditingSwipeableFor orientation: SwipeActionsOrientation) -> Bool
+    func swipeController(_ controller: SwipeController, canBeginEditingSwipeableFor orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool
     
     func swipeController(_ controller: SwipeController, editActionsForSwipeableFor orientation: SwipeActionsOrientation) -> [SwipeAction]?
     
@@ -67,8 +67,8 @@ class SwipeController: NSObject {
         guard let target = actionsContainerView, var swipeable = self.swipeable else { return }
         
         let velocity = gesture.velocity(in: target)
-        
-        if delegate?.swipeController(self, canBeginEditingSwipeableFor: velocity.x > 0 ? .left : .right) == false {
+        let location = gesture.location(in: gesture.view)
+        if delegate?.swipeController(self, canBeginEditingSwipeableFor: velocity.x > 0 ? .left : .right, from: location) == false {
             return
         }
         
@@ -362,7 +362,13 @@ extension SwipeController: UIGestureRecognizerDelegate {
             let view = gestureRecognizer.view,
             let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
             let translation = gestureRecognizer.translation(in: view)
-            return abs(translation.y) <= abs(translation.x)
+            
+            let velocity = gestureRecognizer.velocity(in: actionsContainerView)
+            let location = gestureRecognizer.location(in: view)
+            let orientation: SwipeActionsOrientation = velocity.x > 0 ? .left : .right
+
+            let shouldBegin = delegate?.swipeController(self, canBeginEditingSwipeableFor: orientation, from: location) ?? true
+            return shouldBegin && (abs(translation.y) <= abs(translation.x))
         }
         
         return true

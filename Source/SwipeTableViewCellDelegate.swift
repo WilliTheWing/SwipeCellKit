@@ -10,7 +10,7 @@ import UIKit
 /**
  The `SwipeTableViewCellDelegate` protocol is adopted by an object that manages the display of action buttons when the cell is swiped.
  */
-public protocol SwipeTableViewCellDelegate: class {
+public protocol SwipeTableViewCellDelegate: AnyObject {
     
     /**
      Asks the delegate for the actions to display in response to a swipe in the specified row.
@@ -72,6 +72,18 @@ public protocol SwipeTableViewCellDelegate: class {
      - note: The returned rectange should be in the table view's own coordinate system. Returning `nil` will result in no vertical offset to be be calculated.
      */
     func visibleRect(for tableView: UITableView) -> CGRect?
+
+    /**
+     Asks the delegate if swipe is allowed or not.
+
+     - parameter orientation: The side of the cell.
+
+     - parameter point: The point of the touch.
+
+     - returns: True if swipe is allowed.
+     */
+    func canSwipe(for orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool
+
 }
 
 /**
@@ -88,5 +100,9 @@ public extension SwipeTableViewCellDelegate {
     
     func visibleRect(for tableView: UITableView) -> CGRect? {
         return nil
+    }
+
+    func canSwipe(for orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool {
+        return true
     }
 }

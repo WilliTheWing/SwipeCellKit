@@ -71,6 +71,17 @@ public protocol SwipeCollectionViewCellDelegate: class {
      - note: The returned rectange should be in the collection view's own coordinate system. Returning `nil` will result in no vertical offset to be be calculated.
      */
     func visibleRect(for collectionView: UICollectionView) -> CGRect?
+
+    /**
+     Asks the delegate if swipe is allowed or not.
+
+     - parameter orientation: The side of the cell.
+
+     - parameter point: The point of the touch.
+
+     - returns: True if swipe is allowed.
+     */
+    func canSwipe(for orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool
 }
 
 /**
@@ -87,5 +98,9 @@ public extension SwipeCollectionViewCellDelegate {
     
     func visibleRect(for collectionView: UICollectionView) -> CGRect? {
         return nil
+    }
+
+    func canSwipe(for orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool {
+        return true
     }
 }

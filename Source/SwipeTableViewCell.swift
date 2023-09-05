@@ -180,8 +180,9 @@ open class SwipeTableViewCell: UITableViewCell {
 }
 
 extension SwipeTableViewCell: SwipeControllerDelegate {
-    func swipeController(_ controller: SwipeController, canBeginEditingSwipeableFor orientation: SwipeActionsOrientation) -> Bool {
-        return self.isEditing == false
+    func swipeController(_ controller: SwipeController, canBeginEditingSwipeableFor orientation: SwipeActionsOrientation, from point: CGPoint) -> Bool {
+        let canSwipe = delegate?.canSwipe(for: orientation, from: point) ?? true
+        return canSwipe && self.isEditing == false
     }
     
     func swipeController(_ controller: SwipeController, editActionsForSwipeableFor orientation: SwipeActionsOrientation) -> [SwipeAction]? {
@@ -224,4 +225,5 @@ extension SwipeTableViewCell: SwipeControllerDelegate {
     func swipeController(_ controller: SwipeController, didDeleteSwipeableAt indexPath: IndexPath) {
         tableView?.deleteRows(at: [indexPath], with: .none)
     }
+
 }
